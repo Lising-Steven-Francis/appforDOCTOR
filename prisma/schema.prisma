@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                       String   @id @default(cuid())
+  userId                   String   @unique(map: "Account_userId_key")
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?  @db.Text
+  access_token             String?  @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?  @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime
+  user                     User     @relation(fields: [userId], references: [id], map: "Account_userId_fkey")
+
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
+  @@index([userId], map: "Account_userId_idx")
+}
+
+model Authenticator {
+  credentialID         String  @unique(map: "Authenticator_credentialID_key")
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Authenticator_userId_fkey")
+
+  @@id([userId, credentialID])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique(map: "Session_sessionToken_key")
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], map: "Session_userId_fkey")
+
+  @@index([userId], map: "Session_userId_idx")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  username      String?         @unique(map: "User_username_key")
+  email         String?         @unique(map: "User_email_key")
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  account       Account?
+  authenticator Authenticator[]
+  session       Session[]
+}
+
+model permittedaccount {
+  id         String  @id @default(cuid())
+  firstname  String
+  middlename String?
+  lastname   String
+  email      String? @unique(map: "PermittedAccount_email_key")
+  phone      String? @unique(map: "PermittedAccount_phone_key")
+  role       String? @unique(map: "PermittedAccount_role_key")
+
+  @@index([id, firstname, lastname], map: "PermittedAccount_id_firstname_lastname_idx")
+}
+
+model VerificationOTP {
+  id                String            @id @default(cuid())
+  token             String            @unique(map: "VerificationOTP_token_key")
+  expires           DateTime
+  createdAt         DateTime          @default(now())
+  otp               Int
+  callbackUrl       String            @db.Text
+  verificationtoken VerificationToken @relation(fields: [token], references: [token], onDelete: Cascade, map: "VerificationOTP_token_fkey")
+
+  @@unique([token, otp], map: "VerificationOTP_token_otp_key")
+}
+
+model VerificationToken {
+  id              String           @id @default(cuid())
+  identifier      String
+  token           String           @unique(map: "VerificationToken_token_key")
+  expires         DateTime
+  createdAt       DateTime         @default(now())
+  verificationotp VerificationOTP?
+
+  @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+}
+
+model email_verification {
+  id                  String    @id @default(cuid())
+  email               String    @unique(map: "EmailVerification_email_key")
+  reason              String?
+  verifyAttempts      Int?
+  lastUpdated         DateTime  @updatedAt
+  createdAt           DateTime  @default(now())
+  blockCooldownUntil  DateTime?
+  resendCooldownUntil DateTime?
+
+  @@index([id, email], map: "EmailVerification_id_email_idx")
+}
