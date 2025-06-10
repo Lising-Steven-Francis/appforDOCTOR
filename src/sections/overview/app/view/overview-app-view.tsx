@@ -37,18 +37,18 @@ export function OverviewAppView() {
             title={`Welcome back 👋 \n ${user?.name || ''}`}
             description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
             img={<SeoIllustration hideBackground />}
-            action={
-              <Button variant="contained" color="primary">
-                Go now
-              </Button>
-            }
+           // action={
+              // <Button variant="contained" color="primary">
+              //   Go now
+              // </Button>
+           // }
           />
         </Grid>
-
+{/* 
         <Grid size={{ xs: 12, md: 4 }}>
           <AppFeatured list={_appFeatured} />
-        </Grid>
-
+        </Grid> */}
+{/* 
         <Grid size={{ xs: 12, md: 4 }}>
           <AppWidgetSummary
             title="Total active users"
@@ -59,9 +59,9 @@ export function OverviewAppView() {
               series: [15, 18, 12, 51, 68, 11, 39, 37],
             }}
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid size={{ xs: 12, md: 4 }}>
+        {/* <Grid size={{ xs: 12, md: 4 }}>
           <AppWidgetSummary
             title="Total installed"
             percent={0.2}
@@ -72,8 +72,8 @@ export function OverviewAppView() {
               series: [20, 41, 63, 33, 28, 35, 50, 46],
             }}
           />
-        </Grid>
-
+        </Grid> */}
+{/* 
         <Grid size={{ xs: 12, md: 4 }}>
           <AppWidgetSummary
             title="Total downloads"
@@ -85,8 +85,8 @@ export function OverviewAppView() {
               series: [18, 19, 31, 8, 16, 37, 12, 33],
             }}
           />
-        </Grid>
-
+        </Grid> */}
+{/* 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AppCurrentDownload
             title="Current download"
@@ -100,8 +100,8 @@ export function OverviewAppView() {
               ],
             }}
           />
-        </Grid>
-
+        </Grid> */}
+{/* 
         <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AppAreaInstalled
             title="Area installed"
@@ -149,7 +149,7 @@ export function OverviewAppView() {
               ],
             }}
           />
-        </Grid>
+        </Grid> */}
 
         <Grid size={{ xs: 12, lg: 8 }}>
           <AppNewInvoice
@@ -169,24 +169,24 @@ export function OverviewAppView() {
           <AppTopRelated title="Related applications" list={_appRelated} />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AppTopInstalledCountries title="Top installed countries" list={_appInstalled} />
         </Grid>
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AppTopAuthors title="Top authors" list={_appAuthors} />
-        </Grid>
+        </Grid> */}
 
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
             <AppWidget
               title="Conversion"
               total={38566}
               icon="solar:user-rounded-bold"
               chart={{ series: 48 }}
-            />
+            /> */}
 
-            <AppWidget
+            {/* <AppWidget
               title="Applications"
               total={55566}
               icon="solar:letter-bold"
@@ -195,9 +195,9 @@ export function OverviewAppView() {
                 colors: [theme.vars.palette.info.light, theme.vars.palette.info.main],
               }}
               sx={{ bgcolor: 'info.dark', [`& .${svgColorClasses.root}`]: { color: 'info.light' } }}
-            />
-          </Box>
-        </Grid>
+            /> */}
+          {/* </Box>
+        </Grid> */}
       </Grid>
     </DashboardContent>
   );

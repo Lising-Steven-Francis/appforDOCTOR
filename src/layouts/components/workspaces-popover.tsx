@@ -80,7 +80,7 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
       ]}
       {...other}
     >
-      <Box
+      {/* <Box
         component="img"
         alt={workspace?.name}
         src={workspace?.logo}
@@ -92,9 +92,9 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
         sx={{ typography: 'subtitle2', display: { xs: 'none', [mediaQuery]: 'inline-flex' } }}
       >
         {workspace?.name}
-      </Box>
+      </Box> */}
 
-      <Label
+      {/* <Label
         color={workspace?.plan === 'Free' ? 'default' : 'info'}
         sx={{
           height: 22,
@@ -103,9 +103,9 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
         }}
       >
         {workspace?.plan}
-      </Label>
+      </Label> */}
 
-      <Iconify width={16} icon="carbon:chevron-sort" sx={{ color: 'text.disabled' }} />
+      {/* <Iconify width={16} icon="carbon:chevron-sort" sx={{ color: 'text.disabled' }} /> */}
     </ButtonBase>
   );
 

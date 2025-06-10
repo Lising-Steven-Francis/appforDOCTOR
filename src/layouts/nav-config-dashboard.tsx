@@ -62,17 +62,20 @@ export const navData: NavSectionProps['data'] = [
    * Overview
    */
   {
-    subheader: 'Overview',
+    subheader: '',
     items: [
-      { title: 'App', path: paths.dashboard.root, icon: ICONS.dashboard },
-      { title: 'Ecommerce', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce },
+      { title: 'Home', path: paths.dashboard.root, icon: ICONS.dashboard },
+      { title: 'Health Bites', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce },
       { title: 'Analytics', path: paths.dashboard.general.analytics, icon: ICONS.analytics },
       { title: 'Banking', path: paths.dashboard.general.banking, icon: ICONS.banking },
-      { title: 'Booking', path: paths.dashboard.general.booking, icon: ICONS.booking },
-      { title: 'File', path: paths.dashboard.general.file, icon: ICONS.file },
-      { title: 'Course', path: paths.dashboard.general.course, icon: ICONS.course },
-    ],
-  },
+      { title: 'Patients', path: paths.dashboard.general.booking, icon: ICONS.booking },
+    //  { title: 'File', path: paths.dashboard.general.file, icon: ICONS.file },
+    //  { title: 'Course', path: paths.dashboard.general.course, icon: ICONS.course },
+      { title: 'Chat', path: paths.dashboard.chat, icon: ICONS.chat },
+      { title: 'Calendar', path: paths.dashboard.calendar, icon: ICONS.calendar }
+     ],
+   },
+   
   /**
    * Management
    */
@@ -167,8 +170,7 @@ export const navData: NavSectionProps['data'] = [
 //           </Label>
 //         ),
 //       },
-//       { title: 'Chat', path: paths.dashboard.chat, icon: ICONS.chat },
-//       { title: 'Calendar', path: paths.dashboard.calendar, icon: ICONS.calendar },
+    
 //       { title: 'Kanban', path: paths.dashboard.kanban, icon: ICONS.kanban },
 //     ],
 //   },

@@ -96,7 +96,6 @@
     "next-auth": "^5.0.0-beta.28",
     "nodemailer": "^6.10.1",
     "nprogress": "^0.2.0",
-    "prisma": "^6.8.2",
     "react": "^19.1.0",
     "react-apexcharts": "^1.7.0",
     "react-dom": "^19.1.0",
@@ -140,6 +139,7 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
+    "prisma": "^6.8.2",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0"
   }
