@@ -4,18 +4,17 @@ import { m } from 'framer-motion';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { varAlpha } from 'minimal-shared/utils';
-import Typography from '@mui/material/Typography';
+// import Typography from '@mui/material/Typography';
 
-import { paths } from 'src/routes/paths';
+// import { paths } from 'src/routes/paths';
 import { CONFIG } from 'src/global-config';
-import { Label } from 'src/components/label';
-import { Avatar } from 'src/components/avatar';
-import { useAuthContext } from 'src/auth/hooks';
+// import { Label } from 'src/components/label';
+// import { Avatar } from 'src/components/avatar';
 
 // ----------------------------------------------------------------------
 
 export function NavUpgrade({ sx, ...other }: BoxProps) {
-  const { user } = useAuthContext();
+  // const { user } = useAuthContext();
 
   return (
     <Box
