@@ -12,11 +12,11 @@ export function InvoiceCreateView() {
   return (
     <DashboardContent>
       <CustomBreadcrumbs
-        heading="Create a new invoice"
+        heading="Create a patient receipt"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Invoice', href: paths.dashboard.invoice.root },
-          { name: 'New invoice' },
+          { name: 'Patient Receipt' },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />

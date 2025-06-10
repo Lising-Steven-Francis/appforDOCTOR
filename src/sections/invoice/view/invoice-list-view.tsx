@@ -217,7 +217,7 @@ export function InvoiceListView() {
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              New invoice
+              New appointment
             </Button>
           }
           sx={{ mb: { xs: 3, md: 5 } }}

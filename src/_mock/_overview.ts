@@ -42,7 +42,7 @@ export const _appAuthors = Array.from({ length: 3 }, (_, index) => ({
 }));
 
 export const _appInvoices = Array.from({ length: 5 }, (_, index) => {
-  const category = ['Android', 'Mac', 'Windows', 'Android', 'Mac'][index];
+  const category = ['Coronary Artery Bypass Grafting', 'Organ Transplantation', 'Brain Surgery', 'Major Abdominal Surgeries', 'Spinal Fusion Surgery '][index];
 
   const status = ['paid', 'out of date', 'progress', 'paid', 'paid'][index];
 

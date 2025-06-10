@@ -68,7 +68,7 @@ export function InvoiceNewEditForm({ currentInvoice }: Props) {
   const loadingSend = useBoolean();
 
   const defaultValues: NewInvoiceSchemaType = {
-    invoiceNumber: 'INV-1990',
+    invoiceNumber: 'PID-1990',
     createDate: today(),
     dueDate: null,
     taxes: 0,

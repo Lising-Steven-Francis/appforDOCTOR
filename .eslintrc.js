@@ -11,8 +11,30 @@ module.exports = {
     'react',
     'react-hooks',
     'import',
-    'perfectionist',
     'unused-imports',
+  ],
+  rules: {
+    // Disable all perfectionist rules
+    'perfectionist/sort-imports': 'off',
+    'perfectionist/sort-named-imports': 'off',
+    'perfectionist/sort-named-exports': 'off',
+    'perfectionist/sort-exports': 'off',
+    'import/order': 'off',
+    // Disable all other perfectionist rules
+    'perfectionist/*': 'off',
+  },
+  overrides: [
+    {
+      files: ['**/*.{ts,tsx}'],
+      rules: {
+        // Disable all perfectionist rules for TypeScript files
+        'perfectionist/sort-imports': 'off',
+        'perfectionist/sort-named-imports': 'off',
+        'perfectionist/sort-named-exports': 'off',
+        'perfectionist/sort-exports': 'off',
+        'import/order': 'off',
+      },
+    },
   ],
   settings: {
     'import/resolver': {
@@ -69,32 +91,5 @@ module.exports = {
     // Unused imports rules
     'unused-imports/no-unused-imports': 'warn',
     'unused-imports/no-unused-vars': ['off', { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' }],
-
-    // Sort imports rules
-    'perfectionist/sort-named-imports': ['warn', { type: 'line-length', order: 'asc' }],
-    'perfectionist/sort-named-exports': ['warn', { type: 'line-length', order: 'asc' }],
-    'perfectionist/sort-exports': ['warn', { order: 'asc', type: 'line-length', groupKind: 'values-first' }],
-    'perfectionist/sort-imports': [
-      'error',
-      {
-        order: 'asc',
-        ignoreCase: true,
-        type: 'line-length',
-        environment: 'node',
-        maxLineLength: undefined,
-        newlinesBetween: 'always',
-        internalPattern: ['^src/.+'],
-        groups: [
-          'style',
-          'side-effect',
-          'type',
-          ['builtin', 'external'],
-          ['parent', 'sibling', 'index'],
-          ['parent-type', 'sibling-type', 'index-type'],
-          'object',
-          'unknown',
-        ],
-      },
-    ],
   },
 }; 
