@@ -48,7 +48,7 @@ export const _appInvoices = Array.from({ length: 5 }, (_, index) => {
 
   return {
     id: _mock.id(index),
-    invoiceNumber: `INV-199${index}`,
+    invoiceNumber: `PID-19${index}`,
     price: _mock.number.price(index),
     category,
     status,

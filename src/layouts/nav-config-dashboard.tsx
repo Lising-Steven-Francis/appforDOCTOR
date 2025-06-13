@@ -65,15 +65,12 @@ export const navData: NavSectionProps['data'] = [
     subheader: '',
     items: [
       { title: 'Home', path: paths.dashboard.root, icon: ICONS.dashboard },
-      { title: 'Health Bites', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce },
-      { title: 'Appointment', path: paths.dashboard.general.analytics, icon: ICONS.analytics },
-      //{ title: 'EMR', path: paths.dashboard.general.banking, icon: ICONS.banking },
-      { title: 'Patients', path: paths.dashboard.general.booking, icon: ICONS.booking },
-    //  { title: 'File', path: paths.dashboard.general.file, icon: ICONS.file },
-    //  { title: 'Course', path: paths.dashboard.general.course, icon: ICONS.course },
+      { title: 'Health Bites', path: paths.dashboard.general.ecommerce, icon: ICONS.file }, // Using file icon like EMR
+      { title: 'Appointment', path: paths.dashboard.general.analytics, icon: ICONS.calendar }, // Changed to calendar icon
+      { title: 'Patients', path: paths.dashboard.general.booking, icon: ICONS.user }, // Changed to user icon
       { title: 'Chat', path: paths.dashboard.chat, icon: ICONS.chat },
       { title: 'Calendar', path: paths.dashboard.calendar, icon: ICONS.calendar },
-       { title: 'EMR', path: paths.dashboard.general.banking, icon: ICONS.banking }
+      { title: 'EMR', path: paths.dashboard.general.banking, icon: ICONS.file } // Changed to file icon for medical records
      ],
    },
    

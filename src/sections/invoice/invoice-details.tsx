@@ -121,7 +121,7 @@ export function InvoiceDetails({ invoice }: Props) {
           <Box
             component="img"
             alt="Invoice logo"
-            src="/logo/logo-single.svg"
+            src="/logo22.png"
             sx={{ width: 48, height: 48 }}
           />
 

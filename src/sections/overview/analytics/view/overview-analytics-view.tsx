@@ -1,185 +1,296 @@
 'use client';
 
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-
-import { AnalyticsNews } from '../analytics-news';
-import { AnalyticsTasks } from '../analytics-tasks';
-import { AnalyticsCurrentVisits } from '../analytics-current-visits';
-import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
-import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
-import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
-import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
-import { AnalyticsCurrentSubject } from '../analytics-current-subject';
-import { AnalyticsConversionRates } from '../analytics-conversion-rates';
-
-import { CONFIG } from 'src/global-config';
-import { Image } from 'src/components/image';
-import { DashboardContent } from 'src/layouts/dashboard';
+import { useState } from 'react';
+import { Icon } from '@iconify/react';
+import { faker } from '@faker-js/faker';
+import { alpha, useTheme } from '@mui/material/styles';
 import {
-  _analyticTasks,
-  _analyticPosts,
-  _analyticTraffic,
-  _analyticOrderTimeline,
-} from 'src/_mock';
+  Tab,
+  Card,
+  Tabs,
+  Table,
+  Avatar,
+  Tooltip,
+  Checkbox,
+  TableRow,
+  TableBody,
+  TableCell,
+  TableHead,
+  IconButton,
+  Typography,
+  TableContainer,
+  TablePagination,
+} from '@mui/material';
+
+import { Label } from 'src/components/label';
+import { fDate } from 'src/utils/format-time';
+import { Scrollbar } from 'src/components/scrollbar';
+import { DashboardContent } from 'src/layouts/dashboard';
+
+// Types
+type AppointmentStatus = 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'pending';
+type LabelVariant = 'filled' | 'outlined' | 'soft' | 'inverted';
+
+interface Appointment {
+  id: string;
+  appointmentNumber: string;
+  patientName: string;
+  doctorName: string;
+  appointmentDate: Date;
+  status: AppointmentStatus;
+  avatar: string;
+}
+
+interface AppointmentTableRowProps {
+  row: Appointment;
+  selected: boolean;
+  onSelectRow: () => void;
+  onDeleteRow: () => void;
+}
+
+// Mock data for appointments
+const _appointments: Appointment[] = Array.from({ length: 10 }, (_, index) => ({
+  id: faker.string.uuid(),
+  appointmentNumber: `APPT-${faker.number.int({ min: 1000, max: 9999 })}`,
+  patientName: faker.person.fullName(),
+  doctorName: `Dr. ${faker.person.fullName()}`,
+  appointmentDate: faker.date.soon(),
+  status: faker.helpers.arrayElement(['confirmed', 'pending', 'cancelled', 'completed']),
+  avatar: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+}));
+
+// Status options for tabs
+const APPOINTMENT_STATUS_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'confirmed', label: 'Confirmed' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'cancelled', label: 'Cancelled' },
+  { value: 'completed', label: 'Completed' },
+];
+
+// Table head cells
+interface TableHeadCell {
+  id: string;
+  label: string;
+  align?: 'left' | 'center' | 'right' | 'justify' | 'inherit';
+}
+
+const TABLE_HEAD: TableHeadCell[] = [
+  { id: 'appointmentNumber', label: 'Appointment' },
+  { id: 'patientName', label: 'Patient' },
+  { id: 'doctorName', label: 'Doctor' },
+  { id: 'appointmentDate', label: 'Date & Time' },
+  { id: 'status', label: 'Status' },
+  { id: 'action', label: '', align: 'right' },
+];
+
+function AppointmentTableRow({ row, selected, onSelectRow, onDeleteRow }: AppointmentTableRowProps) {
+  const { appointmentNumber, patientName, doctorName, appointmentDate, status, avatar } = row;
+
+  return (
+    <TableRow hover selected={selected}>
+      <TableCell padding="checkbox">
+        <Checkbox checked={selected} onChange={onSelectRow} />
+      </TableCell>
+      <TableCell>{appointmentNumber}</TableCell>
+      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar src={avatar} sx={{ mr: 2 }} />
+        {patientName}
+      </TableCell>
+      <TableCell>{doctorName}</TableCell>
+      <TableCell>{fDate(appointmentDate)}</TableCell>
+      <TableCell>
+        <Label
+          color={
+            (status === 'completed' && 'success') ||
+            (status === 'confirmed' && 'info') ||
+            (status === 'cancelled' && 'error') ||
+            'warning'
+          }
+          sx={{ textTransform: 'capitalize' }}
+        >
+          {status}
+        </Label>
+      </TableCell>
+      <TableCell align="right">
+        <Tooltip title="Delete">
+          <IconButton onClick={onDeleteRow}>
+            <Icon icon="solar:trash-bin-trash-bold" />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
+    </TableRow>
+  );
+}
 
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
+  const theme = useTheme();
+  const [currentTab, setCurrentTab] = useState('all');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [tableData, setTableData] = useState(_appointments);
+
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: string) => {
+    setCurrentTab(newValue);
+    setPage(0);
+  };
+
+  const handleSelectAllRows = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelected = tableData.map((n) => n.id);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleSelectRow = (id: string) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: string[] = [];
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+    setSelected(newSelected);
+  };
+
+  const handleDeleteRow = (id: string) => {
+    const deleteRow = tableData.filter((row) => row.id !== id);
+    setTableData(deleteRow);
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPage(0);
+    setRowsPerPage(parseInt(event.target.value, 10));
+  };
+
+  const filteredData = tableData.filter((item) => {
+    if (currentTab === 'all') return true;
+    return item.status === currentTab;
+  });
+
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredData.length) : 0;
+
   return (
     <DashboardContent maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Hi, Welcome back 👋
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Appointments
       </Typography>
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Weekly sales"
-            percent={2.6}
-            total={714000}
-            icon={
-              <Image  
-                alt="Weekly sales"
-                src={`${CONFIG.assetsDir}/assets/icons/glass/ic-glass-bag.svg`}
-              />
-            }
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [22, 8, 35, 50, 82, 84, 77, 12],
-            }}
-          />
-        </Grid>
+      <Card>
+        <Tabs
+          value={currentTab}
+          onChange={handleChangeTab}
+          sx={{
+            px: 2.5,
+            boxShadow: `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+          }}
+        >
+          {APPOINTMENT_STATUS_OPTIONS.map((tab) => (
+            <Tab
+              key={tab.value}
+              value={tab.value}
+              label={tab.label}
+              iconPosition="end"
+              icon={
+                <Label
+                  variant={
+                    (tab.value === 'all' || tab.value === currentTab ? 'filled' : 'soft') as LabelVariant
+                  }
+                  color={
+                    (tab.value === 'completed' && 'success') ||
+                    (tab.value === 'confirmed' && 'info') ||
+                    (tab.value === 'cancelled' && 'error') ||
+                    'warning'
+                  }
+                >
+                  {tab.value === 'all'
+                    ? tableData.length
+                    : tableData.filter((item) => item.status === tab.value).length}
+                </Label>
+              }
+            />
+          ))}
+        </Tabs>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="New users"
-            percent={-0.1}
-            total={1352831}
-            color="secondary"
-            icon={
-              <Image
-                alt="New users"
-                src={`${CONFIG.assetsDir}/assets/icons/glass/ic-glass-users.svg`}
-              />
-            }
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 47, 40, 62, 73, 30, 23, 54],
-            }}
-          />
-        </Grid>
+        <Scrollbar>
+          <TableContainer sx={{ minWidth: 800, position: 'relative' }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      indeterminate={
+                        selected.length > 0 && selected.length < tableData.length
+                      }
+                      checked={tableData.length > 0 && selected.length === tableData.length}
+                      onChange={handleSelectAllRows}
+                    />
+                  </TableCell>
+                  {TABLE_HEAD.map((headCell) => {
+                    const align = headCell.align || 'left';
+                    return (
+                      <TableCell 
+                        key={headCell.id} 
+                        align={align as 'left' | 'center' | 'right' | 'justify' | 'inherit'}
+                      >
+                        {headCell.label}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              </TableHead>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Purchase orders"
-            percent={2.8}
-            total={1723315}
-            color="warning"
-            icon={
-              <Image
-                alt="Purchase orders"
-                src={`${CONFIG.assetsDir}/assets/icons/glass/ic-glass-buy.svg`}
-              />
-            }
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [40, 70, 50, 28, 70, 75, 7, 64],
-            }}
-          />
-        </Grid>
+              <TableBody>
+                {filteredData
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => {
+                    const selectedRow = selected.indexOf(row.id) !== -1;
+                    return (
+                      <AppointmentTableRow
+                        key={row.id}
+                        row={row}
+                        selected={selectedRow}
+                        onSelectRow={() => handleSelectRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
+                      />
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Scrollbar>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="Messages"
-            percent={3.6}
-            total={234}
-            color="error"
-            icon={
-              <Image
-                alt="Messages"
-                src={`${CONFIG.assetsDir}/assets/icons/glass/ic-glass-message.svg`}
-              />
-            }
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-              series: [56, 30, 23, 54, 47, 40, 62, 73],
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsCurrentVisits
-            title="Current visits"
-            chart={{
-              series: [
-                { label: 'America', value: 3500 },
-                { label: 'Asia', value: 2500 },
-                { label: 'Europe', value: 1500 },
-                { label: 'Africa', value: 500 },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsWebsiteVisits
-            title="Website visits"
-            subheader="(+43%) than last year"
-            chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-              series: [
-                { name: 'Team A', data: [43, 33, 22, 37, 67, 68, 37, 24, 55] },
-                { name: 'Team B', data: [51, 70, 47, 67, 40, 37, 24, 70, 24] },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsConversionRates
-            title="Conversion rates"
-            subheader="(+43%) than last year"
-            chart={{
-              categories: ['Italy', 'Japan', 'China', 'Canada', 'France'],
-              series: [
-                { name: '2022', data: [44, 55, 41, 64, 22] },
-                { name: '2023', data: [53, 32, 33, 52, 13] },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsCurrentSubject
-            title="Current subject"
-            chart={{
-              categories: ['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math'],
-              series: [
-                { name: 'Series 1', data: [80, 50, 30, 40, 100, 20] },
-                { name: 'Series 2', data: [20, 30, 40, 80, 20, 80] },
-                { name: 'Series 3', data: [44, 76, 78, 13, 43, 10] },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsNews title="News" list={_analyticPosts} />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsOrderTimeline title="Order timeline" list={_analyticOrderTimeline} />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-          <AnalyticsTrafficBySite title="Traffic by site" list={_analyticTraffic} />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
-          <AnalyticsTasks title="Tasks" list={_analyticTasks} />
-        </Grid>
-      </Grid>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Card>
     </DashboardContent>
   );
 }
